@@ -1,6 +1,7 @@
 import React, { createContext, useState } from 'react';
 import { IDKitWidget, VerificationLevel } from '@worldcoin/idkit';
 
+// Calls your implemented server route
 const verifyProof = async (proof: any) => {
   const response = await fetch('/api/verify', {
     method: 'POST',
@@ -19,6 +20,7 @@ const verifyProof = async (proof: any) => {
   }
 };
 
+// Functionality after verifying
 const onSuccess = () => {
   console.log('Success');
 };
