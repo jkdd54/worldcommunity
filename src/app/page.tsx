@@ -1,8 +1,7 @@
-import React, { createContext, useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { IDKitWidget, VerificationLevel } from '@worldcoin/idkit';
 
-// Calls your implemented server route
-const verifyProof = async (proof: any) => {
+const verifyProof = async (proof) => {
   const response = await fetch('/api/verify', {
     method: 'POST',
     headers: {
@@ -20,29 +19,39 @@ const verifyProof = async (proof: any) => {
   }
 };
 
-// Functionality after verifying
 const onSuccess = () => {
   console.log('Success');
 };
 
 export default function HomePage() {
-  return (
-    <div className="container-center">
-      <h1>Community Site</h1>
-      <p>월드 커뮤니티는 세계 최초로 월드 ID만 사용하는 완전 영지식 증명 커뮤니티입니다.</p>
-      <IDKitWidget
-        app_id="app_6c3821fa0dbede374338de59f453db3b"
-        action="verify"
-        verification_level={VerificationLevel.Device}
-        handleVerify={verifyProof}
-        onSuccess={onSuccess}
-      >
-        {({ open }) => (
-          <button onClick={open}>
-            Verify with World ID
-          </button>
-        )}
-      </IDKitWidget>
-    </div>
-  );
+  const shadowRootRef = useRef(null);
+
+  useEffect(() => {
+    if (shadowRootRef.current) {
+      const shadowRoot = shadowRootRef.current.attachShadow({ mode: 'open' });
+      shadowRoot.innerHTML = `
+        <style>
+          .container-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+          }
+        </style>
+        <div class="container-center">
+          <h1>Community Site</h1>
+          <p>월드 커뮤니티는 세계 최초로 월드 ID만 사용하는 완전 영지식 증명 커뮤니티입니다.</p>
+          <button id="verify-button">Verify with World ID</button>
+        </div>
+      `;
+
+      const button = shadowRoot.getElementById('verify-button');
+      button.addEventListener('click', () => {
+        // handle verify button click
+      });
+    }
+  }, []);
+
+  return <div ref={shadowRootRef}></div>;
 }
